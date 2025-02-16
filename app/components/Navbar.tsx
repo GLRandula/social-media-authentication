@@ -1,10 +1,13 @@
 import React from 'react'
 import Link from 'next/link';
 import Image from 'next/image';
+import { SignIn, SignOut } from './auth-component';
+import { auth } from '@/auth';
 
-const Navbar = () => {
+const Navbar = async () => {
 
-  const user = true;
+  const session = await auth();
+  console.log(session?.user);
 
   return (
     <header className='bg-gray-800 text-white p-4'>
@@ -24,12 +27,14 @@ const Navbar = () => {
 
             {/* User Profile */}
             {
-                user ? <div className='flex space-x-4 mr-10'>
+                session?.user ? <div className='flex space-x-4 mr-10'>
                     <Link href="/profile">
-                        <Image src="/profile.png" alt="profile" width={44} height={44} />
+                        <Image src={`${session?.user.image}`} alt="profile" width={44} height={44} className='rounded-full shrink-0' />
                     </Link>
-                    <button className='cursor-pointer hover:text-yellow-300'>Logout</button>
-                </div> : <div className='bg-blue-400 text-white px-6 py-2 rounded-full mr-10 cursor-pointer hover:bg-blue-600'>Login</div>
+                    <SignOut />
+                </div> : <div>
+                    <SignIn />
+                </div>
             }
         </nav>
     </header>
